@@ -4,12 +4,35 @@ const PIECE_SYMBOL = {
     'K_BLACK': '♚','Q_BLACK':'♛','R_BLACK':'♜','B_BLACK':'♝','N_BLACK':'♞','P_BLACK':'♟'
 };
 
-function pieceToSymbol(piece) {
+function pieceToSymbol(piece, row) {
     if (!piece) return '';
-    const type = (piece.type || '').toUpperCase();
-    const color = (piece.color || '').toUpperCase();
-    const key = `${type}_${color}`;
-    return PIECE_SYMBOL[key] || '';
+
+    // objeto { type, color }
+    if (typeof piece === 'object') {
+        const type = (piece.type || '').toUpperCase();
+        const color = (piece.color || '').toUpperCase();
+        const key = `${type}_${color}`;
+        return PIECE_SYMBOL[key] || '';
+    }
+
+    // string
+    const token = String(piece).trim().toUpperCase();
+
+    // formato já com cor, ex: "P_WHITE" ou "N_BLACK"
+    if (token.includes('_')) {
+        const [type, color] = token.split('_');
+        const key = `${type}_${color}`;
+        return PIECE_SYMBOL[key] || '';
+    }
+
+    // token de uma letra: inferir cor pela linha
+    const type = token; // 'R', 'N', 'B', 'Q', 'K', 'P'
+    let color = '';
+    if (row <= 1) color = 'BLACK';    // linhas 0 e 1 = peças pretas
+    else if (row >= 6) color = 'WHITE'; // linhas 6 e 7 = peças brancas
+    else return ''; // meio do tabuleiro: ambíguo -> vazio
+
+    return PIECE_SYMBOL[`${type}_${color}`] || '';
 }
 
 function createRankLabels() {
@@ -56,7 +79,7 @@ function renderBoard(matrix) {
             const cell = document.createElement('div');
             cell.className = 'cell';
             const piece = matrix[row][col];
-            cell.textContent = pieceToSymbol(piece);
+            cell.textContent = pieceToSymbol(piece, row);
             sq.appendChild(cell);
 
             board.appendChild(sq);

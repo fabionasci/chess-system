@@ -21,8 +21,23 @@ public class ChessController {
     }
 
     @GetMapping("/pieces")
-    public ResponseEntity<ChessPiece[][]> getBoard() {
+    public ResponseEntity<String[][]> getBoard() {
         ChessPiece[][] board = service.getBoard();
-        return ResponseEntity.ok(board);
+        if (board == null || board.length == 0) {
+            return ResponseEntity.ok(new String[0][0]);
+        }
+
+        int rows = board.length;
+        int cols = board[0].length;
+        String[][] view = new String[rows][cols];
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                ChessPiece p = board[i][j];
+                view[i][j] = (p == null) ? null : p.toString();
+            }
+        }
+
+        return ResponseEntity.ok(view);
     }
 }
