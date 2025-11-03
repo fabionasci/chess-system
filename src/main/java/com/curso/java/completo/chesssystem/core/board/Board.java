@@ -1,6 +1,6 @@
-package com.curso.java.completo.chesssystem.board;
+package com.curso.java.completo.chesssystem.core.board;
 
-import com.curso.java.completo.chesssystem.board.exceptions.BoardException;
+import com.curso.java.completo.chesssystem.core.board.exceptions.BoardException;
 
 public class Board {
 

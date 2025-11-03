@@ -1,4 +1,4 @@
-package com.curso.java.completo.chesssystem.board.exceptions;
+package com.curso.java.completo.chesssystem.core.board.exceptions;
 
 public class BoardException extends RuntimeException {
 

@@ -1,4 +1,4 @@
-package com.curso.java.completo.chesssystem.board;
+package com.curso.java.completo.chesssystem.core.board;
 
 public class Piece {
 

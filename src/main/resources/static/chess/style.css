@@ -1,0 +1,77 @@
+/* Conteúdo de style.css */
+:root{
+    --square-size:64px;
+    --rank-width:28px;
+    --light:#f0d9b5;
+    --dark:#b58863;
+    --border:#333;
+}
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    padding:18px;
+    display:flex;
+    justify-content:center;
+}
+.board-wrapper{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+}
+
+/* linha que contém a coluna de ranks e o tabuleiro */
+.board-row{
+    display:flex;
+    align-items:flex-start;
+    gap:6px;
+}
+
+/* números das linhas à esquerda */
+.rank-labels{
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start;
+}
+.rank-label{
+    width:var(--rank-width);
+    height:var(--square-size);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:rgba(0,0,0,0.6);
+    font-size:14px;
+    user-select:none;
+}
+
+/* tabuleiro */
+.board{
+    display: grid;
+    grid-template-columns: repeat(8, var(--square-size));
+    grid-auto-rows: var(--square-size);
+    border: 2px solid var(--border);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+
+.square{ position:relative; width:var(--square-size); height:var(--square-size); display:flex; align-items:center; justify-content:center; }
+.square.light{ background: var(--light); }
+.square.dark{ background: var(--dark); }
+.square .cell{ font-size:32px; user-select:none; }
+
+/* arquivos (a..h) abaixo do tabuleiro */
+.file-labels{
+    display:grid;
+    grid-template-columns: repeat(8, var(--square-size));
+    width: calc(var(--square-size) * 8);
+    text-align:center;
+    gap:0;
+    margin-top:4px;
+}
+.file-label{
+    height:18px;
+    line-height:18px;
+    font-weight:600;
+    user-select:none;
+}
+
+/* status */
+.status{ font-size:14px; color:#333; margin-top:6px; }
