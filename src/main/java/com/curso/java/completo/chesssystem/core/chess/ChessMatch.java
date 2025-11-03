@@ -57,6 +57,10 @@ public class ChessMatch {
         return pieces;
     }
 
+    private void placeNewPiece(char column, int row, ChessPiece piece) {
+        board.placePiece(piece, new Position(8 - row, column - 'a'));
+    }
+
     private void initialSetup() {
         // white pieces (back rank -> row 7)
         board.placePiece(new Rook(board, Color.WHITE), new Position(7, 0));
