@@ -1,4 +1,4 @@
-package com.curso.java.completo.chesssystem.core.chess.enums;
+package chesssystem.core.chess.enums;
 
 public enum Color {
     BLACK(0),

@@ -1,7 +1,7 @@
-package com.curso.java.completo.chesssystem.core.chess;
+package chesssystem.core.chess;
 
-import com.curso.java.completo.chesssystem.core.board.Position;
-import com.curso.java.completo.chesssystem.core.chess.exceptions.ChessException;
+import chesssystem.core.board.Position;
+import chesssystem.core.chess.exceptions.ChessException;
 
 public class ChessPosition {
 

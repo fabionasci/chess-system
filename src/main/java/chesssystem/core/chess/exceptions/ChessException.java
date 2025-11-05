@@ -1,6 +1,6 @@
-package com.curso.java.completo.chesssystem.core.chess.exceptions;
+package chesssystem.core.chess.exceptions;
 
-import com.curso.java.completo.chesssystem.core.board.exceptions.BoardException;
+import chesssystem.core.board.exceptions.BoardException;
 
 public class ChessException extends BoardException {
 

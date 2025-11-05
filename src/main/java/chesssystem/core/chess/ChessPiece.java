@@ -1,8 +1,8 @@
-package com.curso.java.completo.chesssystem.core.chess;
+package chesssystem.core.chess;
 
-import com.curso.java.completo.chesssystem.core.board.Board;
-import com.curso.java.completo.chesssystem.core.board.Piece;
-import com.curso.java.completo.chesssystem.core.chess.enums.Color;
+import chesssystem.core.board.Board;
+import chesssystem.core.board.Piece;
+import chesssystem.core.chess.enums.Color;
 
 public class ChessPiece extends Piece {
 

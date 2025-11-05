@@ -1,4 +1,4 @@
-package com.curso.java.completo.chesssystem.core.board;
+package chesssystem.core.board;
 
 import java.util.Objects;
 

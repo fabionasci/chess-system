@@ -1,11 +1,12 @@
-package com.curso.java.completo.chesssystem.core.chess;
+package chesssystem.core.chess;
 
-import com.curso.java.completo.chesssystem.core.board.Board;
-import com.curso.java.completo.chesssystem.core.board.Piece;
-import com.curso.java.completo.chesssystem.core.board.Position;
-import com.curso.java.completo.chesssystem.core.chess.enums.Color;
-import com.curso.java.completo.chesssystem.core.chess.exceptions.ChessException;
-import com.curso.java.completo.chesssystem.core.chess.pieces.*;
+import chesssystem.core.board.Board;
+import chesssystem.core.board.Piece;
+import chesssystem.core.board.Position;
+import chesssystem.core.chess.enums.Color;
+import chesssystem.core.chess.exceptions.ChessException;
+import chesssystem.core.chess.pieces.*;
+
 
 public class ChessMatch {
 

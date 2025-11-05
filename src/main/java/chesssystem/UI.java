@@ -1,9 +1,9 @@
-package com.curso.java.completo.chesssystem;
+package chesssystem;
 
-import com.curso.java.completo.chesssystem.core.chess.ChessMatch;
-import com.curso.java.completo.chesssystem.core.chess.ChessPiece;
-import com.curso.java.completo.chesssystem.core.chess.ChessPosition;
-import com.curso.java.completo.chesssystem.core.chess.enums.Color;
+import chesssystem.core.chess.ChessMatch;
+import chesssystem.core.chess.ChessPiece;
+import chesssystem.core.chess.ChessPosition;
+import chesssystem.core.chess.enums.Color;
 
 import java.util.Arrays;
 import java.util.InputMismatchException;
