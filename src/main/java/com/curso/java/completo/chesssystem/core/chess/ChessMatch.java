@@ -1,8 +1,10 @@
 package com.curso.java.completo.chesssystem.core.chess;
 
 import com.curso.java.completo.chesssystem.core.board.Board;
+import com.curso.java.completo.chesssystem.core.board.Piece;
 import com.curso.java.completo.chesssystem.core.board.Position;
 import com.curso.java.completo.chesssystem.core.chess.enums.Color;
+import com.curso.java.completo.chesssystem.core.chess.exceptions.ChessException;
 import com.curso.java.completo.chesssystem.core.chess.pieces.*;
 
 public class ChessMatch {
@@ -57,8 +59,30 @@ public class ChessMatch {
         return pieces;
     }
 
+    public ChessPiece performChessMove(ChessPosition sourcePos, ChessPosition targetPos) {
+        Position source = sourcePos.toPosition();
+        Position target = targetPos.toPosition();
+        validateSourcePosition(source);
+        Piece capturedPiece = makeMove(source, target);
+        return (ChessPiece) capturedPiece;
+    }
+
+
+    private Piece makeMove(Position source, Position target) {
+        Piece piece = board.removePiece(source);
+        Piece capturedPiece = board.removePiece(target);
+        board.placePiece(piece, target);
+        return capturedPiece;
+    }
+
+    private void validateSourcePosition(Position position) {
+        if (!board.thereIsAPiece(position)) {
+            throw new ChessException("There is no piece on source position");
+        }
+    }
+
     private void placeNewPiece(char column, int row, ChessPiece piece) {
-        board.placePiece(piece, new Position(8 - row, column - 'a'));
+        board.placePiece(piece, new ChessPosition(column, row).toPosition());
     }
 
     private void initialSetup() {
