@@ -12,6 +12,7 @@
     <description>chess-system core (módulo Java puro)</description>
 
     <properties>
+        <encoding>UTF-8</encoding>
         <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
