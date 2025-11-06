@@ -3,7 +3,9 @@ package chesssystem;
 import chesssystem.core.chess.ChessMatch;
 import chesssystem.core.chess.ChessPiece;
 import chesssystem.core.chess.ChessPosition;
+import chesssystem.core.chess.exceptions.ChessException;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class ChessSystemApplication {
@@ -14,16 +16,25 @@ public class ChessSystemApplication {
         ChessMatch match = new ChessMatch();
 
         while (true) {
-            UI.printBoard(match.getPieces());
-            System.out.println();
-            System.out.println("Source: ");
-            ChessPosition source = UI.readChessPosition(sc);
+            try {
+                UI.clearScreen();
+                UI.printBoard(match.getPieces());
+                System.out.println();
+                System.out.println("Source: ");
+                ChessPosition source = UI.readChessPosition(sc);
 
-            System.out.println();
-            System.out.println("Target: ");
-            ChessPosition target = UI.readChessPosition(sc);
+                System.out.println();
+                System.out.println("Target: ");
+                ChessPosition target = UI.readChessPosition(sc);
 
-            ChessPiece capturedPiece = match.performChessMove(source, target);
+                ChessPiece capturedPiece = match.performChessMove(source, target);
+            } catch (ChessException e) {
+                System.out.println(e.getMessage());
+                sc.nextLine();
+            } catch (InputMismatchException e) {
+                System.out.println(e.getMessage());
+                sc.nextLine();
+            }
         }
     }
 }
