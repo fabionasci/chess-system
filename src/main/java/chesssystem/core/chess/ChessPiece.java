@@ -4,7 +4,7 @@ import chesssystem.core.board.Board;
 import chesssystem.core.board.Piece;
 import chesssystem.core.chess.enums.Color;
 
-public class ChessPiece extends Piece {
+public abstract class ChessPiece extends Piece {
 
     private Color color;
     private int moveCount;
@@ -32,6 +32,5 @@ public class ChessPiece extends Piece {
     protected void decreaseMoveCount() {
         moveCount--;
     }
-
 }
 

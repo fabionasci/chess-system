@@ -1,6 +1,6 @@
 package chesssystem.core.board;
 
-public class Piece {
+public abstract class Piece {
 
     protected Position position;
     private Board board;
@@ -14,20 +14,18 @@ public class Piece {
         return board;
     }
 
-    public boolean[][] possibleMoves() {
-        return null;
-    }
+    public abstract boolean[][] possibleMoves();
 
-    public boolean possibleMove(Position position) {
-        boolean[][] moves = possibleMoves();
-        return moves[position.getRow()][position.getColumn()];
+    public boolean possibleMove() {
+        // rook method to check if there is at least one possible move
+        return possibleMoves()[position.getRow()][position.getColumn()];
     }
 
     public boolean isThereAnyPossibleMove() {
-        boolean[][] moves = possibleMoves();
-        for (int i = 0; i < moves.length; i++) {
-            for (int j = 0; j < moves[i].length; j++) {
-                if (moves[i][j]) {
+        boolean[][] mat = possibleMoves();
+        for (int i = 0; i < mat.length; i++) {
+            for (int j = 0; j < mat.length; j++) {
+                if (mat[i][j]) {
                     return true;
                 }
             }
