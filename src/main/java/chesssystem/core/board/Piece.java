@@ -16,7 +16,7 @@ public abstract class Piece {
 
     public abstract boolean[][] possibleMoves();
 
-    public boolean possibleMove() {
+    public boolean possibleMove(Position target) {
         // rook method to check if there is at least one possible move
         return possibleMoves()[position.getRow()][position.getColumn()];
     }
