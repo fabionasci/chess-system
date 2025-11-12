@@ -7,6 +7,9 @@ import chesssystem.core.chess.enums.Color;
 import chesssystem.core.chess.exceptions.ChessException;
 import chesssystem.core.chess.pieces.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class ChessMatch {
 
@@ -17,6 +20,8 @@ public class ChessMatch {
     private ChessPiece enPassantVulnerable;
     private ChessPiece promoted;
     private Board board;
+    private List<Piece> piecesOnTheBoard = new ArrayList<>();
+    private List<Piece> capturedPieces = new ArrayList<>();
 
 
     public ChessMatch() {
@@ -83,6 +88,12 @@ public class ChessMatch {
         Piece piece = board.removePiece(source);
         Piece capturedPiece = board.removePiece(target);
         board.placePiece(piece, target);
+
+        if (capturedPiece != null) {
+            piecesOnTheBoard.remove(capturedPiece);
+            capturedPieces.add(capturedPiece);
+        }
+
         return capturedPiece;
     }
 
@@ -111,6 +122,7 @@ public class ChessMatch {
 
     private void placeNewPiece(char column, int row, ChessPiece piece) {
         board.placePiece(piece, new ChessPosition(column, row).toPosition());
+        piecesOnTheBoard.add(piece);
     }
 
     private void initialSetup() {
