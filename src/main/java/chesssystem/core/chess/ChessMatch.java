@@ -73,6 +73,14 @@ public class ChessMatch {
         validateSourcePosition(source);
         validateTargetPosition(source, target);
         Piece capturedPiece = makeMove(source, target);
+
+        if (testCheck(currentPlayer)){
+            undoMove(source, target, capturedPiece);
+            throw new ChessException("You can't put yourself in check");
+        }
+
+        check = testCheck(opponent(currentPlayer));
+
         nextTurn();
         return (ChessPiece) capturedPiece;
     }
@@ -97,6 +105,16 @@ public class ChessMatch {
         return capturedPiece;
     }
 
+    private void undoMove(Position source, Position target, Piece capturedPiece) {
+        Piece piece = board.removePiece(target);
+        board.placePiece(piece, source);
+        if (capturedPiece != null) {
+            board.placePiece(capturedPiece, target);
+            capturedPieces.remove(capturedPiece);
+            piecesOnTheBoard.add(capturedPiece);
+        }
+    }
+
     private void validateSourcePosition(Position position) {
         if (!board.thereIsAPiece(position)) {
             throw new ChessException("There is no piece on source position");
@@ -118,6 +136,26 @@ public class ChessMatch {
     private void nextTurn() {
         turn++;
         currentPlayer = (currentPlayer == Color.WHITE) ? Color.BLACK : Color.WHITE;
+    }
+
+    private Color opponent(Color color) {
+        return (color == Color.WHITE) ? Color.BLACK : Color.WHITE;
+    }
+
+    private ChessPiece king(Color color) {
+        return piecesOnTheBoard.stream()
+                .filter(p -> p instanceof King && ((ChessPiece) p).getColor() == color)
+                .map(p -> (ChessPiece) p)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("There is no " + color + " king on the board."));
+    }
+
+    private boolean testCheck(Color color) {
+        Position kingPosition = king(color).getChessPosition().toPosition();
+        return piecesOnTheBoard.stream()
+                .filter(p -> p instanceof ChessPiece)
+                .map(p -> (ChessPiece) p)
+                .anyMatch(p -> p.getColor() == opponent(color) && p.possibleMove(kingPosition));
     }
 
     private void placeNewPiece(char column, int row, ChessPiece piece) {
