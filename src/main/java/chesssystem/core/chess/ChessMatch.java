@@ -81,6 +81,12 @@ public class ChessMatch {
 
         check = testCheck(opponent(currentPlayer));
 
+        if (testCheckMate(opponent(currentPlayer))) {
+            checkMate = true;
+        } else {
+            checkMate = false;
+        }
+
         nextTurn();
         return (ChessPiece) capturedPiece;
     }
@@ -156,6 +162,32 @@ public class ChessMatch {
                 .filter(p -> p instanceof ChessPiece)
                 .map(p -> (ChessPiece) p)
                 .anyMatch(p -> p.getColor() == opponent(color) && p.possibleMove(kingPosition));
+    }
+
+    private boolean testCheckMate(Color color) {
+        if (!testCheck(color)) {
+            return false;
+        }
+
+        boolean hasEscape = piecesOnTheBoard.stream()
+                .filter(p -> p instanceof ChessPiece && ((ChessPiece) p).getColor() == color)
+                .map(p -> (ChessPiece) p)
+                .anyMatch(chessPiece -> {
+                    boolean[][] mat = chessPiece.possibleMoves();
+                    return java.util.stream.IntStream.range(0, board.getRows())
+                            .anyMatch(i -> java.util.stream.IntStream.range(0, board.getColumns())
+                                    .anyMatch(j -> {
+                                        if (!mat[i][j]) return false;
+                                        Position source = chessPiece.getChessPosition().toPosition();
+                                        Position target = new Position(i, j);
+                                        Piece capturedPiece = makeMove(source, target);
+                                        boolean testCheck = testCheck(color);
+                                        undoMove(source, target, capturedPiece);
+                                        return !testCheck;
+                                    }));
+                });
+
+        return !hasEscape;
     }
 
     private void placeNewPiece(char column, int row, ChessPiece piece) {
