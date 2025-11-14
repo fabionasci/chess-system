@@ -198,34 +198,34 @@ public class ChessMatch {
     }
 
     private void initialSetup() {
-        // white pieces (back rank -> row 7)
-        board.placePiece(new Rook(board, Color.WHITE), new Position(7, 0));
-        board.placePiece(new Knight(board, Color.WHITE), new Position(7, 1));
-        board.placePiece(new Bishop(board, Color.WHITE), new Position(7, 2));
-        board.placePiece(new Queen(board, Color.WHITE), new Position(7, 3));
-        board.placePiece(new King(board, Color.WHITE), new Position(7, 4));
-        board.placePiece(new Bishop(board, Color.WHITE), new Position(7, 5));
-        board.placePiece(new Knight(board, Color.WHITE), new Position(7, 6));
-        board.placePiece(new Rook(board, Color.WHITE), new Position(7, 7));
+        // white pieces (back rank -> chess row 1)
+        placeNewPiece('a', 1, new Rook(board, Color.WHITE));
+        placeNewPiece('b', 1, new Knight(board, Color.WHITE));
+        placeNewPiece('c', 1, new Bishop(board, Color.WHITE));
+        placeNewPiece('d', 1, new Queen(board, Color.WHITE));
+        placeNewPiece('e', 1, new King(board, Color.WHITE));
+        placeNewPiece('f', 1, new Bishop(board, Color.WHITE));
+        placeNewPiece('g', 1, new Knight(board, Color.WHITE));
+        placeNewPiece('h', 1, new Rook(board, Color.WHITE));
 
-        // white pawns (row 6)
-        for (int col = 0; col < 8; col++) {
-            board.placePiece(new Pawn(board, Color.WHITE), new Position(6, col));
+        // white pawns (chess row 2)
+        for (char col = 'a'; col <= 'h'; col++) {
+            placeNewPiece(col, 2, new Pawn(board, Color.WHITE));
         }
 
-        // black pieces (back rank -> row 0)
-        board.placePiece(new Rook(board, Color.BLACK), new Position(0, 0));
-        board.placePiece(new Knight(board, Color.BLACK), new Position(0, 1));
-        board.placePiece(new Bishop(board, Color.BLACK), new Position(0, 2));
-        board.placePiece(new Queen(board, Color.BLACK), new Position(0, 3));
-        board.placePiece(new King(board, Color.BLACK), new Position(0, 4));
-        board.placePiece(new Bishop(board, Color.BLACK), new Position(0, 5));
-        board.placePiece(new Knight(board, Color.BLACK), new Position(0, 6));
-        board.placePiece(new Rook(board, Color.BLACK), new Position(0, 7));
+        // black pieces (back rank -> chess row 8)
+        placeNewPiece('a', 8, new Rook(board, Color.BLACK));
+        placeNewPiece('b', 8, new Knight(board, Color.BLACK));
+        placeNewPiece('c', 8, new Bishop(board, Color.BLACK));
+        placeNewPiece('d', 8, new Queen(board, Color.BLACK));
+        placeNewPiece('e', 8, new King(board, Color.BLACK));
+        placeNewPiece('f', 8, new Bishop(board, Color.BLACK));
+        placeNewPiece('g', 8, new Knight(board, Color.BLACK));
+        placeNewPiece('h', 8, new Rook(board, Color.BLACK));
 
-        // black pawns (row 1)
-        for (int col = 0; col < 8; col++) {
-            board.placePiece(new Pawn(board, Color.BLACK), new Position(1, col));
+        // black pawns (chess row 7)
+        for (char col = 'a'; col <= 'h'; col++) {
+            placeNewPiece(col, 7, new Pawn(board, Color.BLACK));
         }
     }
 
