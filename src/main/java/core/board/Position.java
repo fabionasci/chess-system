@@ -1,4 +1,4 @@
-package chesssystem.core.board;
+package core.board;
 
 import java.util.Objects;
 

@@ -1,9 +1,9 @@
-package chesssystem.core.chess;
+package core.chess;
 
-import chesssystem.core.board.Board;
-import chesssystem.core.board.Piece;
-import chesssystem.core.board.Position;
-import chesssystem.core.chess.enums.Color;
+import core.board.Board;
+import core.board.Piece;
+import core.board.Position;
+import core.chess.enums.Color;
 
 public abstract class ChessPiece extends Piece {
 

@@ -1,8 +1,8 @@
-package chesssystem.core.chess.pieces;
+package core.chess.pieces;
 
-import chesssystem.core.board.Board;
-import chesssystem.core.chess.ChessPiece;
-import chesssystem.core.chess.enums.Color;
+import core.board.Board;
+import core.chess.ChessPiece;
+import core.chess.enums.Color;
 
 public class Queen extends ChessPiece {
 

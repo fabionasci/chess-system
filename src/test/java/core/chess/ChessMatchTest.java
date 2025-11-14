@@ -1,6 +1,6 @@
-package chesssystem.core.chess;
+package core.chess;
 
-import chesssystem.core.chess.exceptions.ChessException;
+import core.chess.exceptions.ChessException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

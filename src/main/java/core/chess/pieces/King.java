@@ -1,9 +1,9 @@
-package chesssystem.core.chess.pieces;
+package core.chess.pieces;
 
-import chesssystem.core.board.Board;
-import chesssystem.core.board.Position;
-import chesssystem.core.chess.ChessPiece;
-import chesssystem.core.chess.enums.Color;
+import core.board.Board;
+import core.board.Position;
+import core.chess.ChessPiece;
+import core.chess.enums.Color;
 
 public class King extends ChessPiece {
 

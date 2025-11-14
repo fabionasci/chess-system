@@ -1,6 +1,6 @@
-package chesssystem.core.board;
+package core.board;
 
-import chesssystem.core.board.exceptions.BoardException;
+import core.board.exceptions.BoardException;
 
 public class Board {
 

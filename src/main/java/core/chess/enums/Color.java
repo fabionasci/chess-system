@@ -1,4 +1,4 @@
-package chesssystem.core.chess.enums;
+package core.chess.enums;
 
 public enum Color {
     BLACK(0),

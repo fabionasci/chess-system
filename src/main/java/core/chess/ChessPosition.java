@@ -1,7 +1,7 @@
-package chesssystem.core.chess;
+package core.chess;
 
-import chesssystem.core.board.Position;
-import chesssystem.core.chess.exceptions.ChessException;
+import core.board.Position;
+import core.chess.exceptions.ChessException;
 
 public class ChessPosition {
 

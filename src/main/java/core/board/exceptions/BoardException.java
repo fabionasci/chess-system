@@ -1,4 +1,4 @@
-package chesssystem.core.board.exceptions;
+package core.board.exceptions;
 
 public class BoardException extends RuntimeException {
 

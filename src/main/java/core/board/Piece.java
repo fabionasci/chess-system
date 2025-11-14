@@ -1,4 +1,4 @@
-package chesssystem.core.board;
+package core.board;
 
 public abstract class Piece {
 
@@ -18,7 +18,7 @@ public abstract class Piece {
 
     public boolean possibleMove(Position target) {
         // rook method to check if there is at least one possible move
-        return possibleMoves()[position.getRow()][position.getColumn()];
+        return possibleMoves()[target.getRow()][target.getColumn()];
     }
 
     public boolean isThereAnyPossibleMove() {

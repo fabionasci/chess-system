@@ -1,9 +1,7 @@
-package chesssystem;
-
-import chesssystem.core.chess.ChessMatch;
-import chesssystem.core.chess.ChessPiece;
-import chesssystem.core.chess.ChessPosition;
-import chesssystem.core.chess.exceptions.ChessException;
+import core.chess.ChessMatch;
+import core.chess.ChessPiece;
+import core.chess.ChessPosition;
+import core.chess.exceptions.ChessException;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
