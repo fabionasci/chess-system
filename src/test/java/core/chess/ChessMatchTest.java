@@ -145,7 +145,6 @@ class ChessMatchTest {
         assertThrows(ChessException.class, () -> match.performChessMove(source, target));
     }
 
-    // java
     @Test
     public void performChessMove_shouldCastleKingside_andUpdatePositionsAndMoveCounts() {
         // prepare space for kingside castling (white)
@@ -222,6 +221,115 @@ class ChessMatchTest {
         ChessPiece rook = (ChessPiece) pieces[rookRow][rookCol];
         assertEquals(1, king.getMoveCount(), "king moveCount should be 1 after queenside castling");
         assertEquals(1, rook.getMoveCount(), "rook moveCount should be 1 after queenside castling");
+    }
+
+    @Test
+    public void enPassant_shouldSetVulnerability_whenPawnAdvancesTwoSquares() {
+        // prepare: white pawn e2 -> e4 (two-square advance)
+        match.performChessMove(new ChessPosition('e', 2), new ChessPosition('e', 4));
+
+        // the pawn on e4 must be the enPassantVulnerable piece
+        ChessPiece[][] pieces = match.getPieces();
+        int row = 8 - 4; // 4
+        int col = 'e' - 'a'; // 4
+        ChessPiece pawnOnE4 = pieces[row][col];
+
+        assertNotNull(match.getEnPassantVulnerable(), "enPassantVulnerable should not be null after two-square pawn move");
+        assertSame(pawnOnE4, match.getEnPassantVulnerable(), "enPassantVulnerable must reference the pawn that moved two squares");
+    }
+
+    @Test
+    public void enPassant_capture_shouldRemoveCapturedPawn_andUpdateBoard() {
+        // set up: white pawn to e5 (two moves) so it can capture en passant
+        match.performChessMove(new ChessPosition('e', 2), new ChessPosition('e', 4)); // white
+        match.performChessMove(new ChessPosition('a', 7), new ChessPosition('a', 6)); // black dummy
+        match.performChessMove(new ChessPosition('e', 4), new ChessPosition('e', 5)); // white pawn now on e5
+
+        // black moves pawn two squares from d7 to d5 -> this pawn becomes enPassantVulnerable
+        match.performChessMove(new ChessPosition('d', 7), new ChessPosition('d', 5)); // black
+
+        // white performs en passant capture: pawn e5 -> d6 (should capture the pawn that was on d5)
+        ChessPiece captured = match.performChessMove(new ChessPosition('e', 5), new ChessPosition('d', 6));
+
+        // captured piece must be a black pawn
+        assertNotNull(captured, "en passant capture must return the captured piece");
+        assertTrue(captured instanceof core.chess.pieces.Pawn, "captured piece must be a Pawn");
+        assertEquals(core.chess.enums.Color.BLACK, captured.getColor(), "captured pawn must be black");
+
+        // board: square d5 (where the captured pawn was) must be empty
+        ChessPiece[][] pieces = match.getPieces();
+        int d5Row = 8 - 5; // 3
+        int d5Col = 'd' - 'a'; // 3
+        assertNull(pieces[d5Row][d5Col], "square d5 should be empty after en passant capture");
+
+        // the capturing white pawn must be on d6
+        int d6Row = 8 - 6; // 2
+        int d6Col = 'd' - 'a'; // 3
+        assertNotNull(pieces[d6Row][d6Col], "capturing pawn must be on d6 after en passant");
+        assertTrue(pieces[d6Row][d6Col] instanceof core.chess.pieces.Pawn, "piece on d6 must be a Pawn");
+        assertEquals(core.chess.enums.Color.WHITE, pieces[d6Row][d6Col].getColor(), "piece on d6 must be white");
+
+        // enPassant vulnerability must be cleared after the capture
+        assertNull(match.getEnPassantVulnerable(), "enPassantVulnerable must be null after en passant capture");
+    }
+
+    @Test
+    public void promotion_shouldSetPromoted_andReplacePromotedPieceForAllTypes() throws Exception {
+        // obter board e piecesOnTheBoard via reflexão
+        java.lang.reflect.Field boardField = ChessMatch.class.getDeclaredField("board");
+        boardField.setAccessible(true);
+        core.board.Board board = (core.board.Board) boardField.get(match);
+
+        java.lang.reflect.Field piecesField = ChessMatch.class.getDeclaredField("piecesOnTheBoard");
+        piecesField.setAccessible(true);
+        @SuppressWarnings("unchecked")
+        java.util.List<core.board.Piece> piecesOnTheBoard = (java.util.List<core.board.Piece>) piecesField.get(match);
+
+        // limpar a8 (destino da promoção) e a7 (origem que vamos usar)
+        core.board.Position a8 = new ChessPosition('a', 8).toPosition();
+        core.board.Piece removedA8 = board.removePiece(a8);
+        if (removedA8 != null) piecesOnTheBoard.remove(removedA8);
+
+        core.board.Position a7 = new ChessPosition('a', 7).toPosition();
+        core.board.Piece removedA7 = board.removePiece(a7);
+        if (removedA7 != null) piecesOnTheBoard.remove(removedA7);
+
+        // colocar um peão branco em a7
+        core.chess.pieces.Pawn pawn = new core.chess.pieces.Pawn(board, core.chess.enums.Color.WHITE, match);
+        board.placePiece(pawn, a7);
+        piecesOnTheBoard.add(pawn);
+
+        // executar movimento de promoção: a7 -> a8
+        core.chess.ChessPiece captured = match.performChessMove(new ChessPosition('a', 7), new ChessPosition('a', 8));
+        assertNull(captured, "movimento de promoção não deve capturar (no cenário preparado)");
+
+        // após o performChessMove a implementação já substitui por Queen por padrão
+        core.chess.ChessPiece promoted = match.getPromoted();
+        assertNotNull(promoted, "promoted deve ser setado após o peão chegar na última linha");
+        assertTrue(promoted instanceof core.chess.pieces.Queen, "por padrão a promoção é substituída por Queen");
+
+        // verificar que no tabuleiro há uma Queen em a8
+        core.board.Piece pieceOnA8 = board.piece(a8);
+        assertTrue(pieceOnA8 instanceof core.chess.pieces.Queen, "deve haver uma Queen em a8 após promoção padrão");
+
+        // agora testar replacePromotedPiece para todos os tipos válidos
+        core.chess.ChessPiece replaced;
+
+        replaced = match.replacePromotedPiece("B");
+        assertTrue(replaced instanceof core.chess.pieces.Bishop, "replacePromotedPiece('B') deve criar um Bishop");
+        assertTrue(board.piece(a8) instanceof core.chess.pieces.Bishop, "board deve conter Bishop em a8 após substituição");
+
+        replaced = match.replacePromotedPiece("N");
+        assertTrue(replaced instanceof core.chess.pieces.Knight, "replacePromotedPiece('N') deve criar um Knight");
+        assertTrue(board.piece(a8) instanceof core.chess.pieces.Knight, "board deve conter Knight em a8 após substituição");
+
+        replaced = match.replacePromotedPiece("R");
+        assertTrue(replaced instanceof core.chess.pieces.Rook, "replacePromotedPiece('R') deve criar um Rook");
+        assertTrue(board.piece(a8) instanceof core.chess.pieces.Rook, "board deve conter Rook em a8 após substituição");
+
+        replaced = match.replacePromotedPiece("Q");
+        assertTrue(replaced instanceof core.chess.pieces.Queen, "replacePromotedPiece('Q') deve criar uma Queen");
+        assertTrue(board.piece(a8) instanceof core.chess.pieces.Queen, "board deve conter Queen em a8 após substituição");
     }
 
 

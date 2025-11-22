@@ -118,21 +118,59 @@ public class ChessMatch {
 
     public ChessPiece replacePromotedPiece(String type) {
         if (promoted == null) {
-            throw new IllegalStateException("There is no piece to be promoted");
-        }
-        if (!type.equals("B") && !type.equals("N") && !type.equals("R") && !type.equals("Q")) {
-            return promoted;
+            throw new ChessException("There is no piece to be promoted");
         }
 
-        Position pos = promoted.getChessPosition().toPosition();
-        Piece p = board.removePiece(pos);
-        piecesOnTheBoard.remove(p);
+        String t = type.toUpperCase();
+        if (!t.equals("B") && !t.equals("N") && !t.equals("R") && !t.equals("Q")) {
+            throw new ChessException("Invalid piece for promotion");
+        }
 
-        ChessPiece newPiece = newPiece(type, promoted.getColor());
-        board.placePiece(newPiece, pos);
+        // localizar a posição atual da peça promovida no board
+        Position promotedPosition = null;
+        for (int r = 0; r < 8 && promotedPosition == null; r++) {
+            for (int c = 0; c < 8 && promotedPosition == null; c++) {
+                Position pos = new Position(r, c);
+                Piece p = board.piece(pos);
+                if (p == promoted) {
+                    promotedPosition = pos;
+                }
+            }
+        }
+
+        if (promotedPosition == null) {
+            throw new ChessException("Promoted piece position not found on board");
+        }
+
+        // remover a peça promovida atual do tabuleiro e das listas
+        board.removePiece(promotedPosition);
+        piecesOnTheBoard.remove(promoted);
+
+        // criar a nova peça conforme o tipo escolhido
+        ChessPiece newPiece;
+        Color color = promoted.getColor();
+        switch (t) {
+            case "B":
+                newPiece = new core.chess.pieces.Bishop(board, color);
+                break;
+            case "N":
+                newPiece = new core.chess.pieces.Knight(board, color);
+                break;
+            case "R":
+                newPiece = new core.chess.pieces.Rook(board, color);
+                break;
+            default: // "Q"
+                newPiece = new core.chess.pieces.Queen(board, color);
+                break;
+        }
+
+        // colocar a nova peça no tabuleiro e atualizar listas
+        board.placePiece(newPiece, promotedPosition);
         piecesOnTheBoard.add(newPiece);
 
-        return newPiece;
+        // atualizar referência promoted
+        promoted = newPiece;
+        return promoted;
     }
 
 
