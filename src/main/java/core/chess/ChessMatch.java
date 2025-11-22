@@ -154,21 +154,28 @@ public class ChessMatch {
             capturedPieces.add(capturedPiece);
         }
 
-        // special move castling kingside
-        if (piece instanceof King && target.getColumn() == source.getColumn() + 2) {
-            Position rookSource = new Position(source.getRow(), source.getColumn() + 3);
-            Position rookTarget = new Position(source.getRow(), source.getColumn() + 1);
-            ChessPiece rook = (ChessPiece) board.removePiece(rookSource);
-            board.placePiece(rook, rookTarget);
-            rook.increaseMoveCount();
-        }
-        // special move castling queenside
-        if (piece instanceof Rook && target.getRow() == source.getRow() - 2) {
-            Position rookSource = new Position(source.getRow(), source.getColumn() - 4);
-            Position rookTarget = new Position(source.getRow(), source.getColumn() - 1);
-            ChessPiece rook = (ChessPiece) board.removePiece(rookSource);
-            board.placePiece(rook, rookTarget);
-            rook.increaseMoveCount();
+        // special move castling (king)
+        if (piece instanceof King && Math.abs(target.getColumn() - source.getColumn()) == 2) {
+            int srcRow = source.getRow();
+            int srcCol = source.getColumn();
+            // kingside
+            if (target.getColumn() == srcCol + 2) {
+                int rookSourceCol = srcCol + 3; // h1 when king on e1
+                int rookTargetCol = srcCol + 1; // f1
+                Position rookSource = new Position(srcRow, rookSourceCol);
+                Position rookTarget = new Position(srcRow, rookTargetCol);
+                ChessPiece rook = (ChessPiece) board.removePiece(rookSource);
+                board.placePiece(rook, rookTarget);
+                rook.increaseMoveCount();
+            } else { // queenside
+                int rookSourceCol = srcCol - 4; // a1 when king on e1
+                int rookTargetCol = srcCol - 1; // d1
+                Position rookSource = new Position(srcRow, rookSourceCol);
+                Position rookTarget = new Position(srcRow, rookTargetCol);
+                ChessPiece rook = (ChessPiece) board.removePiece(rookSource);
+                board.placePiece(rook, rookTarget);
+                rook.increaseMoveCount();
+            }
         }
 
         // special move en passant
@@ -200,22 +207,28 @@ public class ChessMatch {
             piecesOnTheBoard.add(capturedPiece);
         }
 
-        // special move castling kingside
-        if (piece instanceof King && target.getColumn() == source.getColumn() + 2) {
-            Position rookSource = new Position(source.getRow(), source.getColumn() + 3);
-            Position rookTarget = new Position(source.getRow(), source.getColumn() + 1);
-            ChessPiece rook = (ChessPiece) board.removePiece(rookTarget);
-            board.placePiece(rook, rookSource);
-            rook.decreaseMoveCount();
-        }
-
-        // special move castling queenside
-        if (piece instanceof Rook && target.getRow() == source.getRow() - 2) {
-            Position rookSource = new Position(source.getRow(), source.getColumn() - 4);
-            Position rookTarget = new Position(source.getRow(), source.getColumn() - 1);
-            ChessPiece rook = (ChessPiece) board.removePiece(rookTarget);
-            board.placePiece(rook, rookSource);
-            rook.decreaseMoveCount();
+        // special move castling (king)
+        if (piece instanceof King && Math.abs(target.getColumn() - source.getColumn()) == 2) {
+            int srcRow = source.getRow();
+            int srcCol = source.getColumn();
+            // kingside undo
+            if (target.getColumn() == srcCol + 2) {
+                int rookSourceCol = srcCol + 3;
+                int rookTargetCol = srcCol + 1;
+                Position rookSource = new Position(srcRow, rookSourceCol);
+                Position rookTarget = new Position(srcRow, rookTargetCol);
+                ChessPiece rook = (ChessPiece) board.removePiece(rookTarget);
+                board.placePiece(rook, rookSource);
+                rook.decreaseMoveCount();
+            } else { // queenside undo
+                int rookSourceCol = srcCol - 4;
+                int rookTargetCol = srcCol - 1;
+                Position rookSource = new Position(srcRow, rookSourceCol);
+                Position rookTarget = new Position(srcRow, rookTargetCol);
+                ChessPiece rook = (ChessPiece) board.removePiece(rookTarget);
+                board.placePiece(rook, rookSource);
+                rook.decreaseMoveCount();
+            }
         }
 
         // special move en passant

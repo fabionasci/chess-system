@@ -145,6 +145,85 @@ class ChessMatchTest {
         assertThrows(ChessException.class, () -> match.performChessMove(source, target));
     }
 
+    // java
+    @Test
+    public void performChessMove_shouldCastleKingside_andUpdatePositionsAndMoveCounts() {
+        // prepare space for kingside castling (white)
+        match.performChessMove(new ChessPosition('g', 2), new ChessPosition('g', 3)); // white: free g2 to allow bishop to move
+        match.performChessMove(new ChessPosition('a', 7), new ChessPosition('a', 6)); // black dummy
+
+        match.performChessMove(new ChessPosition('g', 1), new ChessPosition('f', 3)); // white: free g1 (knight)
+        match.performChessMove(new ChessPosition('a', 6), new ChessPosition('a', 5)); // black dummy
+
+        match.performChessMove(new ChessPosition('f', 1), new ChessPosition('g', 2)); // white: move bishop from f1 to g2, freeing f1
+        match.performChessMove(new ChessPosition('a', 5), new ChessPosition('a', 4)); // black dummy
+
+        // perform kingside castling: king from e1 to g1
+        match.performChessMove(new ChessPosition('e', 1), new ChessPosition('g', 1)); // white
+
+        ChessPiece[][] pieces = match.getPieces();
+        int kingRow = 8 - 1; // 7
+        int kingCol = 'g' - 'a'; // 6
+        int rookRow = 8 - 1; // 7
+        int rookCol = 'f' - 'a'; // 5
+        int srcKingRow = 8 - 1; // 7
+        int srcKingCol = 'e' - 'a'; // 4
+
+        // king and rook repositioned
+        assertNotNull(pieces[kingRow][kingCol], "king should be on g1 after castling");
+        assertTrue(pieces[rookRow][rookCol] instanceof core.chess.pieces.Rook, "rook should be on f1 after castling");
+        assertNull(pieces[srcKingRow][srcKingCol], "e1 should be empty after castling");
+
+        // move counts updated (should be 1 for king and rook that moved)
+        ChessPiece king = (ChessPiece) pieces[kingRow][kingCol];
+        ChessPiece rook = (ChessPiece) pieces[rookRow][rookCol];
+        assertEquals(1, king.getMoveCount(), "king moveCount should be 1 after castling");
+        assertEquals(1, rook.getMoveCount(), "rook moveCount should be 1 after castling");
+    }
+
+    @Test
+    public void performChessMove_shouldCastleQueenside_andUpdatePositionsAndMoveCounts() {
+        // prepare space for queenside castling (white)
+        match.performChessMove(new ChessPosition('b', 2), new ChessPosition('b', 4)); // white
+        match.performChessMove(new ChessPosition('a', 7), new ChessPosition('a', 6)); // black dummy
+
+        match.performChessMove(new ChessPosition('c', 2), new ChessPosition('c', 4)); // white
+        match.performChessMove(new ChessPosition('h', 7), new ChessPosition('h', 6)); // black dummy
+
+        match.performChessMove(new ChessPosition('d', 2), new ChessPosition('d', 4)); // white
+        match.performChessMove(new ChessPosition('a', 6), new ChessPosition('a', 5)); // black dummy
+
+        match.performChessMove(new ChessPosition('b', 1), new ChessPosition('a', 3)); // white
+        match.performChessMove(new ChessPosition('h', 6), new ChessPosition('h', 5)); // black dummy
+
+        match.performChessMove(new ChessPosition('c', 1), new ChessPosition('b', 2)); // white
+        match.performChessMove(new ChessPosition('g', 7), new ChessPosition('g', 6)); // black dummy
+
+        match.performChessMove(new ChessPosition('d', 1), new ChessPosition('d', 2)); // white
+        match.performChessMove(new ChessPosition('g', 6), new ChessPosition('g', 5)); // black dummy
+
+        // perform queenside castling: king from e1 to c1
+        match.performChessMove(new ChessPosition('e', 1), new ChessPosition('c', 1)); // white
+
+        ChessPiece[][] pieces = match.getPieces();
+        int kingRow = 8 - 1; // 7
+        int kingCol = 'c' - 'a'; // 2
+        int rookRow = 8 - 1; // 7
+        int rookCol = 'd' - 'a'; // 3
+        int srcKingCol = 'e' - 'a'; // 4
+
+        // king and rook repositioned
+        assertNotNull(pieces[kingRow][kingCol], "king should be on c1 after queenside castling");
+        assertTrue(pieces[rookRow][rookCol] instanceof core.chess.pieces.Rook, "rook should be on d1 after queenside castling");
+        assertNull(pieces[kingRow][srcKingCol], "e1 should be empty after queenside castling");
+
+        // move counts updated (should be 1 for king and rook that moved)
+        ChessPiece king = (ChessPiece) pieces[kingRow][kingCol];
+        ChessPiece rook = (ChessPiece) pieces[rookRow][rookCol];
+        assertEquals(1, king.getMoveCount(), "king moveCount should be 1 after queenside castling");
+        assertEquals(1, rook.getMoveCount(), "rook moveCount should be 1 after queenside castling");
+    }
+
 
     private int countNonNullRow(ChessPiece[][] pieces, int row) {
         int count = 0;
