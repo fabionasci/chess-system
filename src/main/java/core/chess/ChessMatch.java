@@ -57,7 +57,7 @@ public class ChessMatch {
     }
 
     public ChessPiece[][] getPieces() {
-        // retornar matriz de ChessPiece a partir do board
+        // return a matrix of ChessPiece from the board
         ChessPiece[][] pieces = new ChessPiece[board.getRows()][board.getColumns()];
         for (int i = 0; i < board.getRows(); i++) {
             for (int j = 0; j < board.getColumns(); j++) {
@@ -281,25 +281,35 @@ public class ChessMatch {
             return false;
         }
 
-        boolean hasEscape = piecesOnTheBoard.stream()
-                .filter(p -> p instanceof ChessPiece && ((ChessPiece) p).getColor() == color)
-                .map(p -> (ChessPiece) p)
-                .anyMatch(chessPiece -> {
-                    boolean[][] mat = chessPiece.possibleMoves();
-                    return java.util.stream.IntStream.range(0, board.getRows())
-                            .anyMatch(i -> java.util.stream.IntStream.range(0, board.getColumns())
-                                    .anyMatch(j -> {
-                                        if (!mat[i][j]) return false;
-                                        Position source = chessPiece.getChessPosition().toPosition();
-                                        Position target = new Position(i, j);
-                                        Piece capturedPiece = makeMove(source, target);
-                                        boolean testCheck = testCheck(color);
-                                        undoMove(source, target, capturedPiece);
-                                        return !testCheck;
-                                    }));
-                });
+        // defensive copy of the player's pieces to avoid ConcurrentModificationException
+        List<ChessPiece> playerPieces = new ArrayList<>();
+        for (Piece p : piecesOnTheBoard) {
+            if (p instanceof ChessPiece) {
+                ChessPiece cp = (ChessPiece) p;
+                if (cp.getColor() == color) {
+                    playerPieces.add(cp);
+                }
+            }
+        }
 
-        return !hasEscape;
+        for (ChessPiece chessPiece : playerPieces) {
+            boolean[][] mat = chessPiece.possibleMoves();
+            for (int i = 0; i < board.getRows(); i++) {
+                for (int j = 0; j < board.getColumns(); j++) {
+                    if (!mat[i][j]) continue;
+                    Position source = chessPiece.getChessPosition().toPosition();
+                    Position target = new Position(i, j);
+                    Piece capturedPiece = makeMove(source, target);
+                    boolean kingStillInCheck = testCheck(color);
+                    undoMove(source, target, capturedPiece);
+                    if (!kingStillInCheck) {
+                        return false; // there is an escape -> not checkmate
+                    }
+                }
+            }
+        }
+
+        return true; // no escape found -> checkmate
     }
 
     private void placeNewPiece(char column, int row, ChessPiece piece) {

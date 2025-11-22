@@ -61,8 +61,88 @@ class ChessMatchTest {
         ChessPosition target = new ChessPosition('e', 4);
 
         ChessException ex = assertThrows(ChessException.class, () -> match.performChessMove(source, target));
-        // opcional: verificar mensagem específica
-        // assertEquals("There is no piece on source position", ex.getMessage());
+
+        assertEquals("There is no piece on source position", ex.getMessage());
+    }
+
+    @Test
+    public void performChessMove_shouldThrowException_whenSourceIsOpponentPiece() {
+        ChessPosition source = new ChessPosition('e', 7); // peça preta
+        ChessPosition target = new ChessPosition('e', 5);
+
+        assertThrows(ChessException.class, () -> match.performChessMove(source, target));
+    }
+
+    @Test
+    public void performChessMove_shouldThrowException_whenTargetIsInvalid() {
+        ChessPosition source = new ChessPosition('e', 2);
+        ChessPosition target = new ChessPosition('e', 5); // movimento inválido para peão
+
+        assertThrows(ChessException.class, () -> match.performChessMove(source, target));
+    }
+
+    @Test
+    public void performChessMove_shouldCapturePawn_whenWhiteCapturesBlackPawn() {
+        // e2 to e4
+        match.performChessMove(new ChessPosition('e', 2), new ChessPosition('e', 4));
+        // d7 to d5
+        match.performChessMove(new ChessPosition('d', 7), new ChessPosition('d', 5));
+        // e4 captures d5
+        ChessPiece captured = match.performChessMove(new ChessPosition('e', 4), new ChessPosition('d', 5));
+
+        assertNotNull(captured, "captura de peão negro por peão branco deve retornar peça capturada");
+    }
+
+    @Test
+    public void possibleMoves_knight_b1_returnsExpectedMoves() {
+        boolean[][] moves = match.possibleMoves(new ChessPosition('b', 1));
+        // coordenadas em notação xadrez -> índices da matriz: rowIndex = 8 - rank, colIndex = file - 'a'
+        int a3Row = 8 - 3; // 5
+        int a3Col = 'a' - 'a'; // 0
+        int c3Row = 8 - 3; // 5
+        int c3Col = 'c' - 'a'; // 2
+        assertTrue(moves[a3Row][a3Col], "cavalo em b1 deve poder ir para a3");
+        assertTrue(moves[c3Row][c3Col], "cavalo em b1 deve poder ir para c3");
+        // a1 -> rank 1 -> row 7, coluna 'a' -> 0
+        assertFalse(moves[8 - 1][0], "posição a1 não deve ser marcada como movimento possível");
+    }
+
+    @Test
+    public void performChessMove_shouldAdvanceTurn_andUpdateBoard() {
+        // e2 -> e4
+        match.performChessMove(new ChessPosition('e', 2), new ChessPosition('e', 4));
+
+        // turno e jogador
+        assertEquals(2, match.getTurn(), "turn deve incrementar depois do movimento");
+        assertEquals(core.chess.enums.Color.BLACK, match.getCurrentPlayer(), "deve ser a vez do preto");
+
+        // verificar getPieces() atualizada (índices: row = 8 - rank, col = file - 'a')
+        ChessPiece[][] pieces = match.getPieces();
+        int srcRow = 8 - 2; // 6
+        int srcCol = 'e' - 'a'; // 4
+        int tgtRow = 8 - 4; // 4
+        int tgtCol = 'e' - 'a'; // 4
+
+        assertNull(pieces[srcRow][srcCol], "casa origem deve ficar vazia após mover");
+        assertNotNull(pieces[tgtRow][tgtCol], "casa destino deve conter a peça movida");
+    }
+
+    @Test
+    public void possibleMoves_shouldThrow_whenSourceHasNoPiece() {
+        // casa vazia no setup inicial: e3
+        assertThrows(ChessException.class, () -> match.possibleMoves(new ChessPosition('e', 3)));
+    }
+
+    @Test
+    public void performChessMove_shouldThrow_whenMoveLeavesKingInCheck() {
+        // montar sequência que faz com que um movimento deixe o próprio rei em cheque
+        // ex: transformar configuração com movimentos prévios ou posicionar peças via movimentos válidos
+        // TODO: preencher a sequência concreta de movimentos que produz o cenário
+
+        ChessPosition source = new ChessPosition('e', 1); // exemplo: rei branco
+        ChessPosition target = new ChessPosition('e', 2); // exemplo: movimento que resultaria em cheque
+
+        assertThrows(ChessException.class, () -> match.performChessMove(source, target));
     }
 
 
